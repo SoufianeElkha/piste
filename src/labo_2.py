@@ -1,7 +1,7 @@
 import sys
 import matplotlib.image as mpimg
 
-import labo_2_lib as l2lib
+import visfunzione.src.labo_2_lib as l2lib
 
 if __name__ == "__main__":
   # lecture de l'argument passé à la CLI
