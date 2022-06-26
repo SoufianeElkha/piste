@@ -1,35 +1,37 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage.color import rgb2gray
-from skimage.io import imread
 from skimage import data, filters, morphology, feature
 from skimage.transform import hough_line, hough_line_peaks
 from matplotlib import cm
 
-# Transformation de l’image en gris
+ # Transformation de l’image en gris
 def image_gray(img):
   img_gray = rgb2gray(img[:, :, 0:3])
-  plt.imsave('fig/img_gray.png',img_gray, cmap='gray')
-  t = filters.threshold_otsu(img_gray)
+  plt.imsave('fig/img_gray.png', img_gray, cmap='gray')
+  return img_gray
 
-# Application du filtre
+  # Application du filtre
 def filtres_threshold(img_gray):
   t = filters.threshold_otsu(img_gray)
-
+  return t
+  
 # Binarisation de l’aimmagine
-def image_binarize(img_gray,t):
+def image_binarize(img_gray, t):
   img_bin = img_gray
   img_bin[img_bin < t] = 0
   img_bin[img_bin >= t] = 1
-  plt.imsave('fig/img_bin.png',img_bin, cmap = 'gray')
+  plt.imsave('fig/img_bin.png', img_bin, cmap='gray')
+  return img_bin
 
-#Detection des bords
+  #Detection des bords
 def canny(img_bin):
   edges = feature.canny(img_bin, 6.3)
-  plt.imsave('fig/img_edges.png',edges, cmap = 'gray')
-
+  plt.imsave('fig/img_edges.png', edges, cmap='gray')
+  return edges
 
 # Process
+
 def process(img):
 
   runways = []
@@ -57,8 +59,8 @@ def process(img):
   angle_step = 0.5 * np.diff(theta).mean()
   d_step = 0.5 * np.diff(d).mean()
   bounds = [np.rad2deg(theta[0] - angle_step),
-            np.rad2deg(theta[-1] + angle_step),
-            d[-1] + d_step, d[0] - d_step]
+              np.rad2deg(theta[-1] + angle_step),
+              d[-1] + d_step, d[0] - d_step]
 
   ax[1].imshow(np.log(1 + h), extent=bounds, cmap=cm.gray, aspect=1 / 1.5)
   ax[1].set_title('Hough transform')
@@ -73,12 +75,9 @@ def process(img):
 
   #Application de la fonction hough_line_peaks
   for _, angle, dist in zip(*hough_line_peaks(h, theta, d, 15)):
-
-      #Trouver les points x et y
       (x0, y0) = dist * np.array([np.cos(angle), np.sin(angle)])
       ax[2].axline((x0, y0), slope=np.tan(angle + np.pi/2))
-
-      #Étant une droite, si je trouve l’anclation d’un point, pour trouver l’autre angle, il suffit d’ajouter 180degrés
+      #Étant une droite, si je trouve l’angle d’un point, pour trouver l’autre angle, il suffit d’ajouter 180 degrés
       my_angle = np.degrees(angle)+180
       runways.append((round(my_angle/10), (round((my_angle/10)+180/10))))
 
