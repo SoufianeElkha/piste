@@ -40,7 +40,7 @@ python3 labo_2.py lszh.png
 
 ![tight_layout](src/fig/tight_layout.png)
 
-9. Ci-dessous, mon programme a identifié 3 pistes avec les angles suivants : 
+9. Ci-dessous, mon programme a identifié 3 pistes avec les angles suivants par rapport au nord :
 
 ![tight_layout](src/fig/resultat.png)
 
